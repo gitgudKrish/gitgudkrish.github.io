@@ -20,23 +20,23 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden grid-bg">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden grid-bg pt-20">
       {/* Animated background particles */}
-      <div className="absolute inset-0 overflow-hidden">
-        {[...Array(20)].map((_, i) => (
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(15)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-1 h-1 bg-primary rounded-full opacity-30"
+            className="absolute w-1 h-1 bg-primary rounded-full opacity-20"
             initial={{ 
-              x: Math.random() * window.innerWidth, 
-              y: Math.random() * window.innerHeight 
+              x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000), 
+              y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800) 
             }}
             animate={{ 
               y: [null, -20, 20],
-              opacity: [0.3, 0.6, 0.3]
+              opacity: [0.2, 0.5, 0.2]
             }}
             transition={{ 
-              duration: 3 + Math.random() * 2, 
+              duration: 4 + Math.random() * 2, 
               repeat: Infinity,
               delay: Math.random() * 2
             }}
@@ -49,11 +49,11 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center"
+          className="text-center max-w-4xl mx-auto"
         >
           {/* Terminal-style intro */}
           <motion.div 
-            className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full border border-border bg-card/50 backdrop-blur-sm"
+            className="inline-flex items-center gap-2 px-5 py-2.5 mb-8 rounded-full border border-border bg-card/60 backdrop-blur-sm"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -66,7 +66,7 @@ const HeroSection = () => {
 
           {/* Name */}
           <motion.h1 
-            className="text-5xl md:text-7xl lg:text-8xl font-bold mb-4 tracking-tight"
+            className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-tight"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
@@ -77,12 +77,12 @@ const HeroSection = () => {
 
           {/* Typing effect title */}
           <motion.div 
-            className="h-8 mb-8"
+            className="min-h-[2rem] md:min-h-[2.5rem] mb-10"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
           >
-            <p className="text-xl md:text-2xl font-mono text-muted-foreground">
+            <p className="text-lg md:text-xl lg:text-2xl font-mono text-muted-foreground italic">
               {displayText}
               <span className="typing-cursor" />
             </p>
@@ -90,7 +90,7 @@ const HeroSection = () => {
 
           {/* Icon badges */}
           <motion.div 
-            className="flex justify-center gap-6 mb-12"
+            className="flex justify-center gap-8 md:gap-12 mb-12"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
@@ -102,16 +102,16 @@ const HeroSection = () => {
             ].map((item, index) => (
               <motion.div
                 key={item.label}
-                className="flex flex-col items-center gap-2 group"
-                whileHover={{ scale: 1.1 }}
+                className="flex flex-col items-center gap-3 group cursor-pointer"
+                whileHover={{ scale: 1.1, y: -4 }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 + index * 0.1 }}
               >
-                <div className="p-3 rounded-lg border border-border bg-card/50 group-hover:border-primary group-hover:neon-border transition-all duration-300">
-                  <item.icon className="w-6 h-6 text-primary" />
+                <div className="p-4 rounded-xl border border-border bg-card/60 backdrop-blur-sm group-hover:border-primary group-hover:neon-border transition-all duration-300">
+                  <item.icon className="w-6 h-6 md:w-7 md:h-7 text-primary" />
                 </div>
-                <span className="text-xs font-mono text-muted-foreground group-hover:text-primary transition-colors">
+                <span className="text-xs md:text-sm font-mono text-muted-foreground group-hover:text-primary transition-colors">
                   {item.label}
                 </span>
               </motion.div>
@@ -127,30 +127,36 @@ const HeroSection = () => {
           >
             <a
               href="#contact"
-              className="px-8 py-3 font-mono text-sm font-medium bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 neon-border"
+              className="px-8 py-3.5 font-mono text-sm font-medium bg-primary text-primary-foreground rounded-lg hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 neon-border"
             >
               Get In Touch
             </a>
             <a
               href="#projects"
-              className="px-8 py-3 font-mono text-sm font-medium border border-border text-foreground rounded-lg hover:border-primary hover:text-primary transition-all duration-300"
+              className="px-8 py-3.5 font-mono text-sm font-medium border-2 border-border text-foreground rounded-lg hover:border-primary hover:text-primary transition-all duration-300 bg-card/40 backdrop-blur-sm"
             >
               View Projects
             </a>
           </motion.div>
         </motion.div>
+      </div>
 
-        {/* Scroll indicator */}
-        <motion.div 
-          className="absolute bottom-10 left-1/2 -translate-x-1/2"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
+      {/* Scroll indicator - positioned at bottom */}
+      <motion.div 
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2 }}
+      >
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >
-          <div className="w-6 h-10 rounded-full border-2 border-muted-foreground/50 flex justify-center pt-2">
-            <div className="w-1.5 h-3 rounded-full bg-primary animate-pulse" />
+          <div className="w-6 h-10 rounded-full border-2 border-muted-foreground/40 flex justify-center pt-2">
+            <div className="w-1 h-2.5 rounded-full bg-primary" />
           </div>
         </motion.div>
-      </div>
+      </motion.div>
     </section>
   );
 };
