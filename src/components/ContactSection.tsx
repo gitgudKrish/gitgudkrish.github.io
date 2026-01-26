@@ -100,7 +100,7 @@ const ContactSection = () => {
               </a>
 
               <a
-                href="https://linkedin.com/in/krish-shrestha"
+                href="https://www.linkedin.com/in/krishshrestha768/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-4 p-4 glass-card rounded-xl group hover:border-primary/50 transition-all duration-300"
