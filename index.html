@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>krish — kathmandu</title>
+<meta name="description" content="krish shrestha · systems, networks, security · kathmandu · one cat" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23141414'/%3E%3Ctext x='50%25' y='50%25' dy='.35em' text-anchor='middle' fill='%23e8e8e8' font-family='monospace' font-size='20' font-weight='500'%3Ek%3C/text%3E%3C/svg%3E">
+
+<!--
+    hi. welcome to the source.
+
+    everything here is hand-written html/css/js — no frameworks, no build step,
+    one html file, one brain. the imperfections are mine. the cat is also mine.
+
+              /\_/\
+             ( o.o )    "miau." — linus, sysadmin cat, 2026
+              > ^ <
+             ( _._ )
+
+    if you got this far, mail me: Krishshrestha768@gmail.com
+    the password is not in the source. i learned that one the hard way.
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#141414; --bg-2:#1a1a1a; --bg-3:#101010;
+    --fg:#e8e8e8; --mute:#888; --dim:#555;
+    --line:#262626; --line-2:#333;
+    --mark:oklch(0.78 0.10 150);
+    --hi:oklch(0.84 0.14 72);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--fg)}
+  body{
+    font-family:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size:14px; line-height:1.7; font-weight:400;
+    -webkit-font-smoothing:antialiased; text-rendering:geometricPrecision;
+    overflow-x:hidden;
+  }
+  ::selection{background:#2d2d2d;color:#fff}
+  a{color:var(--fg);text-decoration:none;border-bottom:1px solid var(--line);transition:border-color .15s,color .15s}
+  a:hover{border-bottom-color:var(--fg)}
+  code{font-family:inherit;color:var(--mark);background:#1d211c;padding:0 4px;border:1px solid #252a22}
+  kbd{font-family:inherit;font-size:11px;color:var(--fg);background:var(--bg-2);border:1px solid var(--line-2);padding:1px 5px;border-bottom-width:2px}
+
+  .wrap{max-width:1020px;margin:0 auto;padding:72px 48px 120px;position:relative}
+
+  /* top corners */
+  .corner{position:absolute;top:28px;color:var(--dim);font-size:11px;letter-spacing:.04em;z-index:2}
+  .corner.l{left:32px;display:flex;gap:10px;align-items:center}
+  .corner.r{right:32px;text-align:right;display:flex;gap:16px}
+  .corner a{color:var(--mute);border-bottom:none}
+  .corner a:hover{color:var(--fg)}
+  .corner .live{display:inline-block;width:6px;height:6px;background:var(--mark);animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+
+  /* ─── hero ─── */
+  .hero{padding:12px 0 0;margin-bottom:72px}
+  .hero-top{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,1fr);gap:48px;align-items:end;margin-bottom:26px}
+  @media (max-width:820px){ .hero-top{grid-template-columns:1fr;gap:28px;align-items:start} }
+
+  h1{font-size:clamp(42px, 5.2vw, 62px);font-weight:600;letter-spacing:-.02em;margin:0 0 8px;color:var(--fg);line-height:1.02}
+  h1 .dot{color:var(--hi)}
+  h1 .k{display:inline-block;cursor:pointer;position:relative;transition:color .15s}
+  h1 .k:hover{color:var(--hi)}
+  h1 .k::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:1px;background:var(--hi);transform:scaleX(0);transform-origin:left;transition:transform .25s}
+  h1 .k:hover::after{transform:scaleX(1)}
+
+  .tag{color:var(--mute);font-size:15px;margin:0 0 12px}
+  .tag b{color:var(--fg);font-weight:500}
+
+  .now{font-size:12px;color:var(--dim);margin:0;display:flex;gap:14px;flex-wrap:wrap;align-items:baseline}
+  .now span{display:inline-flex;gap:6px;align-items:baseline}
+  .now .k{color:var(--dim)}
+  .now .v{color:var(--mute)}
+  .now .v.hot{color:var(--fg)}
+  .now .sep{color:var(--line-2)}
+
+  .net{position:relative;padding:16px 0 14px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:12px;line-height:1.5;color:var(--dim);white-space:pre;overflow:hidden}
+  .net .label{position:absolute;top:4px;right:0;color:var(--dim);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+  .net pre{margin:0;color:var(--dim)}
+  .net .pkt{position:absolute;color:var(--hi);font-weight:600;transition:opacity .25s}
+
+  /* inline nav inside the hero */
+  nav.inline{
+    display:flex;flex-wrap:wrap;gap:6px 24px;
+    font-size:12px;color:var(--mute);margin:28px 0 32px;
+    padding:11px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  }
+  nav.inline a{color:var(--mute);border-bottom:none;padding:2px 0}
+  nav.inline a:hover{color:var(--fg)}
+  nav.inline a::before{content:"→ ";color:var(--dim)}
+
+  .lede{font-size:15px;line-height:1.75;max-width:66ch;margin:0 0 14px;color:var(--fg)}
+  .lede.quiet{color:var(--mute)}
+  .lede b{color:var(--fg);font-weight:500}
+  .lede em{font-style:normal;background:linear-gradient(transparent 66%, #2d2d2d 66%);padding:0 2px}
+
+  .whoami{
+    margin:18px 0 0;padding:14px 16px;background:var(--bg-3);border:1px solid var(--line);
+    font-size:13px;color:var(--fg);max-width:62ch;
+    max-height:0;opacity:0;overflow:hidden;
+    transition:max-height .4s ease, opacity .3s ease, padding .3s ease;
+    padding-top:0;padding-bottom:0;border-width:0 1px;
+  }
+  .whoami.open{max-height:420px;opacity:1;padding-top:14px;padding-bottom:14px;border-width:1px}
+  .whoami .prompt{color:var(--mark)}
+  .whoami .out{color:var(--fg);display:block;margin-top:8px;white-space:pre-wrap}
+  .whoami .out span.m{color:var(--mute)}
+
+  /* ─── sections ─── */
+  h2{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:72px 0 26px;padding:0;display:flex;align-items:baseline;gap:12px}
+  section:first-of-type h2{margin-top:0}
+  h2 .aside{font-size:11px;letter-spacing:.04em;text-transform:none;color:var(--dim);font-weight:400}
+  h2 .count{margin-left:auto;color:var(--dim);font-weight:400;font-size:10px;letter-spacing:.05em}
+
+  .prose{color:var(--fg);max-width:72ch}
+  .prose p{margin:0 0 12px}
+  .prose .m{color:var(--mute)}
+  .prose .q{color:var(--dim);font-style:italic}
+
+  /* two-col bands */
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+  .two > *{min-width:0}
+  @media (max-width:820px){ .two{grid-template-columns:1fr;gap:48px} }
+
+  /* projects */
+  .thing{margin:0;padding:20px 0;border-top:1px solid var(--line)}
+  .thing:last-of-type{border-bottom:1px solid var(--line)}
+  .thing .top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .thing .name{color:var(--fg);font-weight:500;font-size:16px}
+  .thing .when{color:var(--mute);font-size:12px}
+  .thing .spark{color:var(--dim);font-size:12px;margin-left:auto;font-style:italic}
+  .thing p{color:var(--fg);margin:8px 0 0;max-width:70ch}
+  .thing p.m{color:var(--mute)}
+  .thing .tiny{color:var(--dim);font-size:12px;margin-top:8px;font-style:italic}
+
+  .more-btn{display:inline-block;margin-top:10px;background:none;border:none;padding:0;cursor:pointer;font:inherit;color:var(--mute);font-size:12px;border-bottom:1px dashed var(--line-2)}
+  .more-btn:hover{color:var(--fg);border-bottom-color:var(--fg)}
+  .more-btn .chev{display:inline-block;transition:transform .2s}
+  .more-btn.open .chev{transform:rotate(180deg)}
+
+  .log{max-height:0;opacity:0;overflow:hidden;transition:max-height .45s ease,opacity .3s ease,margin .3s ease;margin-top:0}
+  .log.open{max-height:600px;opacity:1;margin-top:12px}
+  .log pre{margin:0;padding:12px 14px;background:var(--bg-3);border:1px solid var(--line);font-size:12px;color:var(--mute);line-height:1.6;white-space:pre-wrap}
+  .log pre .ok{color:var(--mark)}
+  .log pre .warn{color:var(--hi)}
+  .log pre .m{color:var(--dim)}
+
+  /* work */
+  .cv .row{display:grid;grid-template-columns:170px 1fr;gap:8px 28px;padding:14px 0;border-top:1px solid var(--line)}
+  .cv .row:last-child{border-bottom:1px solid var(--line)}
+  .cv .when{color:var(--mute);font-size:12px;padding-top:4px;white-space:nowrap}
+  .cv b{font-weight:500}
+  .cv .co{color:var(--mute)}
+  .cv .note{color:var(--mute);font-size:12px;display:block;margin-top:4px;max-width:70ch}
+
+  /* find me */
+  .find{font-size:13px;color:var(--fg);display:grid;grid-template-columns:28px 1fr auto;gap:6px 16px;align-items:baseline}
+  .find .h{color:var(--dim);font-variant-numeric:tabular-nums;font-size:12px}
+  .find .w{color:var(--mute);font-size:13px}
+  .find .v{color:var(--fg);text-align:right}
+  .find .v a{color:var(--fg)}
+  .find .ms{color:var(--dim);font-size:11px;margin-left:8px;font-variant-numeric:tabular-nums}
+
+  /* guestbook */
+  .gb{margin-top:6px}
+  .gb-list{list-style:none;padding:0;margin:0 0 14px;font-size:13px;color:var(--fg)}
+  .gb-list li{padding:8px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:100px 1fr;gap:12px}
+  .gb-list li:last-child{border-bottom:1px solid var(--line)}
+  .gb-list .who{color:var(--mute);font-size:12px}
+  .gb-list .what{color:var(--fg)}
+  .gb-list .what::before{content:"“";color:var(--dim)}
+  .gb-list .what::after{content:"”";color:var(--dim)}
+  .gb-form{display:flex;gap:10px;align-items:center;margin-top:4px;font-size:13px}
+  .gb-form .p{color:var(--mark)}
+  .gb-form input{flex:1;background:transparent;border:none;border-bottom:1px solid var(--line-2);color:var(--fg);font:inherit;padding:6px 0;outline:none}
+  .gb-form input:focus{border-bottom-color:var(--fg)}
+  .gb-form input::placeholder{color:var(--dim)}
+  .gb-form .hint{color:var(--dim);font-size:11px}
+
+  /* footer */
+  footer{margin-top:88px;padding-top:20px;border-top:1px solid var(--line);color:var(--dim);font-size:12px;line-height:1.9}
+  footer .row{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  footer .colophon{color:var(--mute);max-width:48ch}
+  footer .colophon b{color:var(--fg);font-weight:500}
+  footer .stats{margin-top:14px;color:var(--mute)}
+  footer .stats span{color:var(--fg)}
+  footer .stats .sep{color:var(--line-2);padding:0 8px}
+
+  .whisper{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(8px);background:var(--bg-2);border:1px solid var(--line);padding:9px 14px;font-size:12px;color:var(--mute);opacity:0;transition:opacity .35s,transform .35s;pointer-events:none;z-index:50;max-width:90vw}
+  .whisper.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .trail{position:fixed;pointer-events:none;z-index:40;width:4px;height:4px;background:var(--fg);opacity:.35;transition:opacity .6s linear, transform .6s linear}
+
+  @media (max-width:640px){
+    .wrap{padding:56px 20px 80px}
+    .corner{font-size:10px;top:22px}
+    .corner.l{left:20px}
+    .corner.r{right:20px;gap:10px}
+    .cv .row{grid-template-columns:1fr;gap:2px}
+    .cv .when{padding-top:0}
+    .find{grid-template-columns:28px 1fr;gap:2px 12px}
+    .find .w{display:none}
+    h2 .aside, h2 .count{display:none}
+    .gb-list li{grid-template-columns:1fr;gap:2px}
+    .net{font-size:10px}
+  }
+
+  @media print{
+    body{background:#fff;color:#000}
+    .corner,.whisper,.net,.gb-form,.more-btn,.trail,footer .stats,nav.inline{display:none}
+    a{color:#000;border-bottom:none}
+    h2{color:#555}
+    .wrap{max-width:none;padding:0}
+    .log{max-height:none;opacity:1}
+  }
+</style>
+</head>
+<body>
+<main class="wrap" id="top">
+
+  <div class="corner l"><span class="live" aria-hidden="true"></span> <span id="here">kathmandu · —</span></div>
+  <div class="corner r"><a href="cv/Krish-Shrestha-CV.pdf" download>cv ↓</a> <a href="mailto:Krishshrestha768@gmail.com">mail ↗</a> <a href="#guestbook">sign the wall ↓</a></div>
+
+  <!-- hero -->
+  <section class="hero">
+    <div class="hero-top">
+      <div>
+        <h1><span class="k" id="name-k" title="click me, i do something">k</span>rish shrestha<span class="dot">.</span></h1>
+        <p class="tag">systems <b>·</b> networks <b>·</b> kathmandu, nepal</p>
+        <p class="now" id="now">
+          <span><span class="k">now</span><span class="v hot" id="now-doing">reading zabbix triggers</span></span>
+          <span class="sep">/</span>
+          <span><span class="k">mood</span><span class="v" id="now-mood">mildly caffeinated</span></span>
+          <span class="sep">/</span>
+          <span><span class="k">wx</span><span class="v">ktm · cool, foggy, 14°</span></span>
+        </p>
+      </div>
+      <div class="net" aria-hidden="true">
+        <span class="label">/var/log/krish.log</span>
+<pre>   you ──┐                          ┌── switch01
+         └── [ ~~~~ internet ~~~~ ] ─┤      ↕
+                                    └── krish@kathmandu</pre>
+        <span class="pkt" id="pkt">●</span>
+      </div>
+    </div>
+
+    <nav class="inline">
+      <a href="#do">what i do</a>
+      <a href="#projects">projects</a>
+      <a href="#work">work</a>
+      <a href="#find">contact</a>
+      <a href="#guestbook">wall</a>
+    </nav>
+
+    <p class="lede">
+      hi, i&apos;m krish. i work on the <em>quiet side of the internet</em> — systems, networks, the small wires behind the ceiling tiles — and i like it best when nothing is on fire and nobody notices.
+    </p>
+    <p class="lede quiet">
+      what i want is simple: <em>a career in systems and networking</em>, built the slow way — by doing real work, breaking real things, and getting a little better at both every week. linux that stays up, networks that route themselves out of trouble, and the quiet discipline of keeping it all running for people who&apos;ll never know you did.
+    </p>
+
+    <div class="whoami" id="whoami">
+      <span class="prompt">krish@kathmandu:~$</span> whoami
+      <span class="out">
+<b>krish shrestha</b>, 22, kathmandu.
+<span class="m"># role.......:</span> systems &amp; network intern, datahub
+<span class="m"># studying...:</span> bsc (hons) computer networking &amp; it security
+<span class="m"># building...:</span> luminet — multi-vendor network automation
+<span class="m"># pets.......:</span> 1 cat, senior sysadmin (see source)
+<span class="m"># opinions...:</span> strong, about dhcp
+      </span>
+    </div>
+  </section>
+
+  <!-- what i do -->
+  <section id="do">
+    <h2>what i actually do <span class="aside">(roughly in order of how often)</span></h2>
+    <div class="prose">
+      <p><b>day to day:</b> linux boxes (ubuntu, rocky, the occasional fedora), docker behind apache reverse proxies, zabbix watching everything, fortigate rules and nat, lamp stacks with mysqldump on a cron, nfs and lvm across a small herd of servers.</p>
+      <p><b>on the network side:</b> tcp/ip, dns, dhcp, vlans, subnetting, vpn, nat, layer 1 and 2 triage — the kind where you&apos;re in a dropped ceiling with a flashlight, reading a label that says <span class="q">&quot;do not remove.&quot;</span></p>
+      <p><b>for automation:</b> python, ansible as the glue, django when a web ui earns its keep, git for everything, docker where it helps. the aws side is certified (foundations, architecting, operations, security) and actually getting used on <a href="#luminet">luminet</a>.</p>
+      <p><b>security:</b> nmap, wireshark, burp, metasploit, bettercap, volatility 3, mitre att&amp;ck, vapt, dvwa. i think blue-team first but you only get good at it by spending time on the other side of the glass.</p>
+      <p class="m">monitoring tool of choice: <span style="color:var(--fg)">zabbix</span>. also: the tab i keep open &quot;just in case.&quot; everyone has one.</p>
+    </div>
+  </section>
+
+  <!-- projects -->
+  <section id="projects">
+    <h2>things i&apos;ve built <span class="aside">(three worth talking about)</span><span class="count">03</span></h2>
+
+    <article class="thing" id="luminet">
+      <div class="top">
+        <span class="name">luminet</span>
+        <span class="when">2025 — ongoing</span>
+        <span class="spark">the main event</span>
+      </div>
+      <p>a web-based network automation toolkit built with <b>django</b> and <b>ansible</b>, made to simplify and automate network device configuration. a role-based interface (admin / operator / viewer) for vlan creation, access port config, device backup, and config rollback across <b>cisco ios</b>, <b>arista eos</b>, and <b>mikrotik routeros</b> — all simulated in gns3 while it grows up.</p>
+      <p class="m">ansible playbooks trigger straight from the django backend. every job is logged, config backups are encrypted with fernet (aes-128) and pushed to a github repo, and gmail smtp handles email notifications. approval workflow, task scheduling, real-time notifications, immutable audit log — a small, secure automation platform for educational and small-scale networks.</p>
+      <button class="more-btn" data-toggle="log-luminet">if you&apos;re curious <span class="chev">↓</span></button>
+      <div class="log" id="log-luminet">
+<pre>$ ansible-playbook -i inventory/ vlan-push.yml --limit core-*
+<span class="m">PLAY [core-*] **************************************************</span>
+TASK [gather vendor facts] .......................... <span class="ok">ok</span>
+TASK [cisco_ios : create vlan 42] ................... <span class="ok">changed</span>
+TASK [arista_eos : create vlan 42] .................. <span class="ok">changed</span>
+TASK [mikrotik_routeros : create vlan 42] ........... <span class="ok">changed</span>
+TASK [audit : write job record] ..................... <span class="ok">ok</span>
+<span class="m">PLAY RECAP *****************************************************</span>
+core-sw-01   : ok=4  changed=1  <span class="warn">rescued=0</span>  failed=0
+core-sw-02   : ok=4  changed=1  <span class="warn">rescued=0</span>  failed=0
+mkt-edge-01  : ok=4  changed=1  <span class="warn">rescued=0</span>  failed=0
+<span class="m"># 3 switches. 1 vlan. 0 ssh sessions. friday, saved.</span></pre>
+      </div>
+    </article>
+
+    <article class="thing" id="memforensics">
+      <div class="top">
+        <span class="name">memory forensics of fileless malware</span>
+        <span class="when">2025 · final year</span>
+        <span class="spark">volatility 3 doing real work</span>
+      </div>
+      <p>injected a meterpreter payload into <code>spoolsv.exe</code> in a controlled win10 lab (process hollowing), escalated to <code>NT AUTHORITY\SYSTEM</code>, then pulled the memory image apart with volatility 3 looking for suspicious regions, weird parent-child chains, and a c2 channel quietly chatting over tcp/443.</p>
+      <p class="m">i also catalogued what the attacker tried to hide: ntfs timestomping, registry hive exfil, cleared event logs, deleted-file recovery via autopsy. ram remembers what disk forgets.</p>
+      <button class="more-btn" data-toggle="log-mem">a sample of the finding <span class="chev">↓</span></button>
+      <div class="log" id="log-mem">
+<pre>$ vol -f mem.raw windows.malfind
+<span class="m">Process     PID   Protection   Tag   Hexdump</span>
+spoolsv.exe 1428  PAGE_EXECUTE_READWRITE  Vad   <span class="warn">4d 5a 90 00 ..  MZ.....</span>
+spoolsv.exe 1428  PAGE_EXECUTE_READWRITE  Vad   <span class="warn">50 45 00 00 ..  PE..</span>
+<span class="m"># spooler subsystem is not supposed to host a PE. huh.</span>
+$ vol -f mem.raw windows.netscan | grep 443
+<span class="warn">TCPv4  10.0.2.15:49871 → 185.xx.xx.xx:443  ESTABLISHED  spoolsv.exe(1428)</span>
+<span class="m"># the spooler does not print things to the internet, friend.</span></pre>
+      </div>
+    </article>
+
+    <article class="thing" id="arp">
+      <div class="top">
+        <span class="name">arp spoofing lab</span>
+        <span class="when">2024</span>
+        <span class="spark">classic, still mean</span>
+      </div>
+      <p>classic MITM on a flat network: poison the arp table, sit in the middle, collect the plaintext credentials people still send in 2024. then put dynamic arp inspection and a snort IDS in front of it and watch the same attack bounce off.</p>
+      <p class="tiny">// turns out &quot;trust&quot; is not a protocol.</p>
+    </article>
+  </section>
+
+  <!-- work + find-me as a two-col band on desktop -->
+  <div class="two">
+    <section id="work">
+      <h2>where i&apos;ve been</h2>
+      <div class="cv">
+        <div class="row">
+          <div class="when">jan 2026 — now</div>
+          <div><b>systems &amp; network trainee</b> <span class="co">· datahub pvt. ltd.</span>
+            <span class="note">docker + apache reverse proxy, zabbix across multiple hosts, fortigate rules and nat, lamp stacks with scheduled mysqldump backups, nfs/lvm across a small fleet.</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="when">jul — oct 2025</div>
+          <div><b>offensive security intern</b> <span class="co">· inred labs</span>
+            <span class="note">full vapt cycle — recon, scanning, exploitation, reporting. smb / rdp / suid escalation in a lab. osint, cve triage, cvss scoring.</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="when">aug — nov 2024</div>
+          <div><b>networking &amp; IT support intern</b> <span class="co">· dusit princess nepal</span>
+            <span class="note">vlans and segmentation on a live hotel network. l1/l2 triage at odd hours. packet tracer dry-runs before touching production.</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="when">2023 — now</div>
+          <div><b>BSc (Hons) computer networking &amp; IT security</b> <span class="co">· islington college / london met</span>
+            <span class="note">kamalpokhari, kathmandu.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="find">
+      <h2>how to find me <span class="aside">(traceroute-style, fastest first)</span></h2>
+      <div class="find">
+        <span class="h">1 ▸</span>
+        <span class="w">email — anything real</span>
+        <span class="v"><a href="mailto:Krishshrestha768@gmail.com">Krishshrestha768@gmail.com</a><span class="ms">~4 h</span></span>
+
+        <span class="h">2 ▸</span>
+        <span class="w">github — actual work</span>
+        <span class="v"><a href="https://github.com/" target="_blank" rel="noopener">github.com/krishshrestha</a><span class="ms">~1 d</span></span>
+
+        <span class="h">3 ▸</span>
+        <span class="w">linkedin — if you must</span>
+        <span class="v"><a href="https://linkedin.com/" target="_blank" rel="noopener">/in/krishshrestha768</a><span class="ms">~2 d</span></span>
+
+        <span class="h">4 ▸</span>
+        <span class="w">personal site</span>
+        <span class="v"><a href="https://shresthakrish.com.np" target="_blank" rel="noopener">shresthakrish.com.np</a><span class="ms">—</span></span>
+
+        <span class="h">5 ▸</span>
+        <span class="w">in person</span>
+        <span class="v">gokarna, kathmandu · UTC+5:45<span class="ms">—</span></span>
+      </div>
+    </section>
+  </div>
+
+  <!-- guestbook -->
+  <section id="guestbook">
+    <h2>sign the wall <span class="aside">(one line, anonymous, lives in your browser)</span></h2>
+    <div class="gb">
+      <ul class="gb-list" id="gb-list">
+        <li><span class="who">a cat</span><span class="what">i walked on this keyboard in 2025. sorry.</span></li>
+        <li><span class="who">a stranger</span><span class="what">i came for the network automation, stayed for the cat.</span></li>
+        <li><span class="who">raman</span><span class="what">good student. louder than the switches sometimes.</span></li>
+        <li><span class="who">future-you</span><span class="what">remember to back up the vlan config before tuesday</span></li>
+      </ul>
+      <form class="gb-form" id="gb-form" autocomplete="off">
+        <span class="p">&gt;</span>
+        <input id="gb-input" name="msg" maxlength="120" placeholder="leave a mark. max 120 chars. no one sees it but you." aria-label="guestbook entry" />
+        <span class="hint"><kbd>↵</kbd></span>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <div class="row">
+      <div>© 2026 · krish shrestha</div>
+      <div class="colophon">
+        typeset in <b>ibm plex mono</b>. hand-written in one html file. no trackers, no cookies, no analytics, no newsletter popup. press <kbd>?</kbd> for shortcuts.
+      </div>
+    </div>
+    <div class="stats">
+      visits <span id="count">#1</span> <span class="sep">·</span>
+      first seen <span id="first-seen">today</span> <span class="sep">·</span>
+      built with <span>html</span>, <span>css</span>, <span>patience</span>
+    </div>
+  </footer>
+
+</main>
+
+<div class="whisper" id="whisper" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  // clock
+  const here = document.getElementById('here');
+  function tick(){
+    try{
+      const n = new Date();
+      const t = new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kathmandu',hour:'2-digit',minute:'2-digit',hour12:false}).format(n);
+      const h = parseInt(new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kathmandu',hour:'2-digit',hour12:false}).format(n),10);
+      let m='awake';
+      if(h<6)m='asleep (probably)';else if(h<10)m='coffee phase';else if(h<13)m='deep work';
+      else if(h<15)m='dal bhat recovery';else if(h<19)m='peak terminal';else if(h<23)m='winding down';
+      else m='probably still up';
+      here.textContent = 'kathmandu · '+t+' · '+m;
+    }catch(e){ here.textContent='kathmandu · now-ish'; }
+  }
+  tick(); setInterval(tick, 30000);
+
+  // now-line rotation
+  const doing=['reading zabbix triggers','watching a vlan converge','writing ansible, deleting ansible','debugging dhcp (again)','teaching luminet a new vendor','ignoring a slack ping','refactoring a bash script into a real program','reading rfc 1918 for fun'];
+  const moods=['mildly caffeinated','suspicious of DNS','fond of syslog','at peace with packets','pre-lunch, optimistic','post-lunch, realistic','one tab from nirvana','quietly amazed things work'];
+  const nd=document.getElementById('now-doing'), nm=document.getElementById('now-mood');
+  const seed=new Date().getMinutes();
+  let di=seed%doing.length, mi=(seed+3)%moods.length;
+  nd.textContent=doing[di]; nm.textContent=moods[mi];
+  setInterval(function(){
+    di=(di+1)%doing.length; mi=(mi+1)%moods.length;
+    nd.style.transition='opacity .25s'; nd.style.opacity=0;
+    nm.style.transition='opacity .25s'; nm.style.opacity=0;
+    setTimeout(function(){ nd.textContent=doing[di]; nm.textContent=moods[mi]; nd.style.opacity=1; nm.style.opacity=1; }, 260);
+  }, 9000);
+
+  // packet hops
+  const pkt=document.getElementById('pkt'), net=pkt.parentElement;
+  function runPacket(){
+    const box=net.getBoundingClientRect();
+    const pre=net.querySelector('pre').getBoundingClientRect();
+    const offX=pre.left-box.left, offY=pre.top-box.top;
+    const gx=7.2, gy=19;
+    const path=[[3,0],[8,0],[14,1],[24,1],[30,1],[35,0],[35,2]];
+    let i=0; pkt.style.opacity=0;
+    function step(){
+      if(i>=path.length){ pkt.style.opacity=0; setTimeout(runPacket,1500); return; }
+      const [c,r]=path[i++];
+      pkt.style.left=(offX+c*gx)+'px';
+      pkt.style.top=(offY+r*gy)+'px';
+      pkt.style.opacity=1;
+      setTimeout(step, 650);
+    }
+    step();
+  }
+  setTimeout(runPacket, 600);
+
+  // k -> whoami
+  document.getElementById('name-k').addEventListener('click', function(){
+    document.getElementById('whoami').classList.toggle('open');
+  });
+
+  // project more
+  document.querySelectorAll('[data-toggle]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      const el=document.getElementById(btn.getAttribute('data-toggle'));
+      if(!el) return;
+      el.classList.toggle('open');
+      btn.classList.toggle('open');
+    });
+  });
+
+  // visits
+  try{
+    const k='k.visits', f='k.firstSeen';
+    let n=parseInt(localStorage.getItem(k)||'0',10)+1;
+    localStorage.setItem(k,String(n));
+    if(!localStorage.getItem(f)) localStorage.setItem(f,new Date().toISOString().slice(0,10));
+    document.getElementById('count').textContent='#'+n;
+    document.getElementById('first-seen').textContent=localStorage.getItem(f);
+  }catch(e){}
+
+  // guestbook
+  const gbList=document.getElementById('gb-list'), gbForm=document.getElementById('gb-form'), gbIn=document.getElementById('gb-input');
+  try{
+    const saved=JSON.parse(localStorage.getItem('k.gb')||'[]');
+    saved.forEach(function(e){ addEntry(e.who,e.what); });
+  }catch(e){}
+  function addEntry(who,what){
+    const li=document.createElement('li');
+    const w=document.createElement('span'); w.className='who'; w.textContent=who;
+    const t=document.createElement('span'); t.className='what'; t.textContent=what;
+    li.appendChild(w); li.appendChild(t); gbList.appendChild(li);
+  }
+  gbForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    const v=gbIn.value.trim(); if(!v) return;
+    addEntry('you', v);
+    try{
+      const cur=JSON.parse(localStorage.getItem('k.gb')||'[]');
+      cur.push({who:'you', what:v});
+      localStorage.setItem('k.gb', JSON.stringify(cur));
+    }catch(err){}
+    gbIn.value='';
+    say('signed. only your browser remembers. which is honestly enough.', 4200);
+  });
+
+  // whisper
+  const whisper=document.getElementById('whisper');
+  let hideT;
+  function say(text, hold){
+    whisper.textContent=text; whisper.classList.add('show');
+    clearTimeout(hideT);
+    hideT=setTimeout(function(){ whisper.classList.remove('show'); }, hold||3800);
+  }
+
+  // cursor trail
+  let lastTrail=0;
+  window.addEventListener('pointermove', function(e){
+    const t=performance.now();
+    if(t-lastTrail<20) return;
+    lastTrail=t;
+    for(let i=0;i<2;i++){
+      const d=document.createElement('div');
+      d.className='trail';
+      const jx=(Math.random()-0.5)*16, jy=(Math.random()-0.5)*16;
+      d.style.left=(e.clientX-2+jx)+'px';
+      d.style.top=(e.clientY-2+jy)+'px';
+      document.body.appendChild(d);
+      requestAnimationFrame(function(){
+        d.style.transform='translate('+((Math.random()-0.5)*20)+'px,'+((Math.random()-0.5)*20)+'px)';
+        d.style.opacity='0';
+      });
+      setTimeout(function(){ d.remove(); }, 900);
+    }
+  }, {passive:true});
+
+  // shortcuts
+  const code=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+  let buf=[], gAt=0;
+  window.addEventListener('keydown', function(e){
+    if(document.activeElement && document.activeElement.tagName==='INPUT') return;
+    buf.push(e.key);
+    if(buf.length>code.length) buf.shift();
+    if(buf.join(',').toLowerCase()===code.join(',').toLowerCase()){
+      say('// you found it. no prize. that is the prize.', 5200);
+      buf=[];
+    }
+    if(e.key==='?' && !e.metaKey && !e.ctrlKey){
+      say('shortcuts: ↑↑↓↓←→←→ba · g+t top · g+h hello · g+g guestbook · click the k', 5200);
+    }
+    if(e.key==='g') gAt=Date.now();
+    const fresh=gAt && (Date.now()-gAt<900);
+    if(fresh && e.key==='t'){ window.scrollTo({top:0,behavior:'smooth'}); gAt=0; }
+    if(fresh && e.key==='h'){ say('hi '+((navigator.language||'').split('-')[0]||'friend')+' friend. mail: Krishshrestha768@gmail.com', 5200); gAt=0; }
+    if(fresh && e.key==='g'){ document.getElementById('guestbook').scrollIntoView({behavior:'smooth',block:'start'}); gAt=0; }
+  });
+
+  // console note
+  try{
+    const a='color:#e8e8e8;font-family:monospace;font-size:13px';
+    const b='color:#888;font-family:monospace';
+    const c='color:#555;font-family:monospace';
+    console.log('%c  hey.', a);
+    console.log('%c  you are reading devtools on a static html file.', b);
+    console.log('%c  which means you and i have at least one thing in common.', b);
+    console.log('%c  mail: Krishshrestha768@gmail.com', b);
+    console.log('%c  ps: try ? on the page. or click the k.', c);
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
